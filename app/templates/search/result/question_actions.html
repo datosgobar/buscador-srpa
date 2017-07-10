@@ -1,0 +1,20 @@
+<div class="question-actions">
+    {% if not hide_actions %}
+        {% if not hide_more_info_link %}
+            <span class="undisplay">
+            <i class="fa fa-eye" aria-hidden="true"></i>
+            ocultar
+        </span>
+        {% endif %}
+        {% if current_user.has_role('admin') %}
+            <span class="edit">
+                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                editar
+            </span>
+            <span class="delete">
+                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                eliminar
+            </span>
+        {% endif %}
+    {% endif %}
+</div>

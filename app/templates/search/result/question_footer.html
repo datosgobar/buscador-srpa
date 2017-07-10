@@ -1,0 +1,7 @@
+{% if not hide_more_info_link %}
+    <div class="more-info">
+        <a href="{{ url_for('see_question', question_id=result.id) }}">
+            Ver mas información sobre esta pregunta
+        </a>
+    </div>
+{% endif %}

@@ -4,7 +4,7 @@
     <section class="container-fluid search-results">
         <div class="row panels-row">
             {% with result = question, hide_more_info_link = True %}
-                {% include 'search/result.html' %}
+                {% include 'search/result/question.html' %}
             {% endwith %}
         </div>
     </section>

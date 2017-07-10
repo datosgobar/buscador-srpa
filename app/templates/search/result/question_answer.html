@@ -1,0 +1,12 @@
+<blockquote>
+    <p class="question-answer"
+       data-attribute-name="answer"
+       data-attribute-default="Pregunta sin respuesta"
+       data-attribute-display-template="“ $ ”">
+        {% if result.answer and result.answer|length > 0 %}
+            “ {{ result.answer }} ”
+        {% else %}
+            Pregunta sin respuesta
+        {% endif %}
+    </p>
+</blockquote>

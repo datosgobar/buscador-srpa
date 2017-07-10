@@ -1,0 +1,23 @@
+<blockquote>
+    <p class="question-body"
+       data-attribute-name="body"
+       data-attribute-default="Pregunta sin texto"
+       data-attribute-display-template="“ $ ”">
+        {% if result.body and result.body|length > 0 %}
+            “ {{ result.body }} ”
+        {% else %}
+            Pregunta sin texto
+        {% endif %}
+    </p>
+
+    <small data-attribute-name="author"
+           data-attribute-default="Sin autor"
+           data-attribute-display-template="Autor: $">
+        {%- if result.author and result.author.name and result.author.name|length > 0 -%}
+            Autor:
+            {{ result.author.name }}
+        {%- else -%}
+            Sin autor
+        {%- endif -%}
+    </small>
+</blockquote>

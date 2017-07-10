@@ -106,4 +106,4 @@ def init_routes(app, db_session, searcher):
     def update_question(question_id):
         result = Question.update(question_id, db_session, request.values)
         searcher.restart_text_classifier()
-        return render_template('/search/result.html', result=result, best_words=False)
+        return render_template('/search/result/question.html', result=result, best_words=False)
