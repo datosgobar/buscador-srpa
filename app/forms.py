@@ -55,7 +55,7 @@ class QuestionForm(Form):
         self.number.data = question.number
         self.body.data = question.body
         self.context.data = question.context
-        self.answer = question.answer
+        self.answer.data = question.answer
         if question.report:
             self.report.data = question.report.name
         if question.author:
