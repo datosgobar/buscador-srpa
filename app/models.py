@@ -61,9 +61,11 @@ class Question(db.Model):
     topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
     subtopic_id = db.Column(db.Integer, db.ForeignKey('subtopic.id'))
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     answer = db.Column(db.Text(MAX_TEXT_LENGTH))
     answer_author_id = db.Column(db.Integer, db.ForeignKey('answer_author.id'))
+    question_date = db.Column(db.DateTime)
+    answer_date = db.Column(db.DateTime)
 
     def __init__(self, **kwargs):
         self.number = kwargs.get('number', None)
@@ -75,6 +77,9 @@ class Question(db.Model):
         self.topic_id = kwargs.get('topic_id', None)
         self.subtopic_id = kwargs.get('subtopic_id', None)
         self.answer = kwargs.get('answer', '')
+        self.question_date = kwargs.get('question_date', None)
+        self.answer_date = kwargs.get('answer_date', None)
+
 
     @classmethod
     def delete(cls, question_id, db_session):
@@ -101,8 +106,7 @@ class QuestionType(db.Model):
     date = db.Column(db.Date())
     questions = db.relationship('Question', backref='questiontype')
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
-
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
@@ -110,7 +114,7 @@ class Report(db.Model):
     date = db.Column(db.Date())
     questions = db.relationship('Question', backref='report')
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 association_table = db.Table(
     'association',
@@ -128,7 +132,7 @@ class Topic(db.Model):
                                 secondary=association_table,
                                 backref=db.backref('topics', lazy='dynamic'))
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class SubTopic(db.Model):
@@ -137,7 +141,7 @@ class SubTopic(db.Model):
     name = db.Column(db.String(MAX_NAME_LENGTH), unique=True)
     questions = db.relationship('Question', backref='subtopic')
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 
 class Author(db.Model):
@@ -145,7 +149,7 @@ class Author(db.Model):
     name = db.Column(db.String(MAX_NAME_LENGTH), unique=True)
     questions = db.relationship('Question', backref='author')
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     # TODO: agregar origen del autor (prov, ciudad, etc)
     # y bloque al cual pertenece (ver excel)
 
@@ -156,4 +160,4 @@ class AnswerAuthor(db.Model):
     name = db.Column(db.String(MAX_NAME_LENGTH), unique=True)
     questions = db.relationship('Question', backref='answer_author')
     created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)

@@ -46,6 +46,21 @@
                 </div>
             {% endblock %}
 
+            {% block question_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.question_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.question_date(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+                </div>
+            {% endblock %}
+
+
             <div class="col-xs-12 no-padding select-group">
                 <div class="col-xs-12 col-sm-6 field-label-container">
                     {{ form.context.label() }}
@@ -89,6 +104,20 @@
                     </div>
                     <div class="col-xs-12 col-sm-6">
                         {{ form.answer(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+                </div>
+            {% endblock %}
+
+            {% block answer_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.answer_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.answer_date(class_='form-control') }}
                     </div>
                     <div class="col-xs-12">
                       <p class="type-warning"></p>

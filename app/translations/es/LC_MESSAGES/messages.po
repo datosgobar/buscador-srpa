@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-05-17 15:43-0300\n"
+"POT-Creation-Date: 2017-07-10 15:46-0300\n"
 "PO-Revision-Date: 2016-10-12 10:34-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -16,59 +16,79 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.4.0\n"
+"Generated-By: Babel 2.3.4\n"
 
-#: forms.py:14 forms.py:148
+#: forms.py:15 forms.py:156 forms.py:295
 msgid "Question number"
 msgstr "Numero de pregunta"
 
-#: forms.py:15
+#: forms.py:16
 msgid ""
 "Question number must be a"
 "                                                   positive integer"
 msgstr "El numero de pregunta debe ser un entero positivo"
 
-#: forms.py:19 forms.py:149
+#: forms.py:20 forms.py:157
 msgid "Question body"
 msgstr "Texto de la pregunta"
 
-#: forms.py:23
+#: forms.py:24
 msgid "Question context (optional)"
 msgstr "Contexto de la pregunta (opcional)"
 
-#: forms.py:26 forms.py:152
+#: forms.py:27 forms.py:162
 msgid "Report number"
 msgstr "Informe"
 
-#: forms.py:27 forms.py:153
+#: forms.py:28 forms.py:163
 msgid "Question author"
 msgstr "Autor de la pregunta"
 
-#: forms.py:28 forms.py:154
+#: forms.py:29 forms.py:164 forms.py:296
 msgid "Question topic"
 msgstr "Organo requerido"
 
-#: forms.py:29 forms.py:155
+#: forms.py:30 forms.py:165 forms.py:297
 msgid "Question subtopic"
 msgstr "Area de gestion"
 
-#: forms.py:31 forms.py:150
+#: forms.py:32 forms.py:159
 msgid "Question answer"
 msgstr "Texto de la respuesta"
 
-#: forms.py:147
+#: forms.py:133
+msgid "Question type"
+msgstr ""
+
+#: forms.py:155
 msgid "First row is header"
 msgstr "Contiene encabezado"
 
-#: forms.py:151
+#: forms.py:158
+msgid "Question date"
+msgstr "Fecha de la pregunta"
+
+#: forms.py:160
+msgid "Answer date"
+msgstr "Fecha de la Respuesta"
+
+#: forms.py:161
 msgid "Question context"
 msgstr "Contexto de la pregunta"
 
-#: forms.py:176
+#: forms.py:188
 msgid "None"
 msgstr ""
 
-#: forms.py:261
+#: forms.py:292
+msgid "Nombre de la comisiÃ³n"
+msgstr ""
+
+#: forms.py:294
+msgid "Autor de la respuesta"
+msgstr ""
+
+#: forms.py:334
 msgid "Base text to query"
 msgstr "Texto de busqueda"
 
@@ -89,3 +109,5 @@ msgstr ""
 #~ msgid "Question justification"
 #~ msgstr "Justificacion de la Pregunta"
 
+#~ msgid "Nombre de la comisión"
+#~ msgstr ""

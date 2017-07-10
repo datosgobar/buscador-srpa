@@ -55,7 +55,7 @@ class QuestionForm(Form):
         self.number.data = question.number
         self.body.data = question.body
         self.context.data = question.context
-        self.answer = question.answer
+        self.answer.data = question.answer
         if question.report:
             self.report.data = question.report.name
         if question.author:
@@ -155,7 +155,9 @@ class ProcessSpreadsheetForm(Form):
     discard_first_row = BooleanField(_('First row is header'), default=True)
     number = SelectField(_('Question number'), [validators.DataRequired("Requerido")])
     body = SelectField(_('Question body'), [validators.DataRequired("Requerido")])
+    question_date = SelectField(_('Question date'))
     answer = SelectField(_('Question answer'))
+    answer_date = SelectField(_('Answer date'))
     context = SelectField(_('Question context'))
     report = SelectField(_('Report number'))
     author = SelectField(_('Question author'))
@@ -192,6 +194,9 @@ class ProcessSpreadsheetForm(Form):
         self.author.choices = choices
         self.topic.choices = choices
         self.subtopic.choices = choices
+        self.question_date.choices = choices
+        self.answer_date.choices = choices
+
         return choices
 
     def save_models(self, filename, db_session):
@@ -228,7 +233,9 @@ class ProcessSpreadsheetForm(Form):
         columns = [
             (self.number.data, 'number'),
             (self.body.data, 'body'),
+            (self.question_date.data, 'question_date'),
             (self.answer.data, 'answer'),
+            (self.answer_date.data, 'answer_date'),
             (self.context.data, 'context'),
             (self.report.data, 'report'),
             (self.author.data, 'author'),
@@ -270,6 +277,10 @@ class ProcessSpreadsheetForm(Form):
                 value = row[col[0]].strip()
                 if col[1] in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
                     value = value.lower()
+                if col[1] in ['question_date', 'answer_date']:
+                    value = value.replace('-', '/')
+                    value = value.replace(':', '/')
+                    value = datetime.strptime(value, '%d/%m/%Y')
             else:
                 value = ''
             d[col[1]] = value
