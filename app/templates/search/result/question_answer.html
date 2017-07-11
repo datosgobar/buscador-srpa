@@ -9,4 +9,14 @@
             Pregunta sin respuesta
         {% endif %}
     </p>
+    <small data-attribute-name="author_answer"
+           data-attribute-default="Sin autor"
+           data-attribute-display-template="Autor: $">
+        {%- if result.answer_author and result.answer_author.name and result.answer_author.name|length > 0 -%}
+            Autor:
+            {{ result.answer_author.name }}
+        {%- else -%}
+            Sin autor
+        {%- endif -%}
+    </small>
 </blockquote>
