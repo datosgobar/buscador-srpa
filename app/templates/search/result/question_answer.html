@@ -18,5 +18,16 @@
         {%- else -%}
             Sin autor
         {%- endif -%}
+
+    </small>
+    <small data-attribute-name="answer_date"
+           data-attribute-default="Sin fecha de respuesta"
+           data-attribute-display-template="Fecha de respuesta: $">
+        {%- if result.answer_date -%}
+            Fecha de respuesta:
+            {{ result.answer_date|date_format_ar }}
+        {%- else -%}
+            Sin fecha de respuesta
+        {%- endif -%}
     </small>
 </blockquote>
