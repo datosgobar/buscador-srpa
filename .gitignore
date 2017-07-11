@@ -8,3 +8,5 @@ venv
 venv3
 runserver.sh
 *.backup
+migrations/*.sql
+*.sqlite.bck
