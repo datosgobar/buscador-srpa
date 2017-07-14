@@ -276,7 +276,7 @@ class ProcessSpreadsheetForm(Form):
                 value = row[col[0]].strip()
                 if col[1] in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
                     value = value.lower()
-                if col[1] in ['question_date', 'answer_date']:
+                if col[1] in ['question_date', 'answer_date'] and len(value) > 0:
                     value = value.replace('-', '/')
                     value = value.replace(':', '/')
                     value = datetime.strptime(value, '%d/%m/%Y')
