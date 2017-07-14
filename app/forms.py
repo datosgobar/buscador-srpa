@@ -305,8 +305,10 @@ class ProcessSpreadsheetTaquigraficasForm(ProcessSpreadsheetForm):
             (self.report.data, 'report'),
             (self.context.data, 'context'),
             (self.body.data, 'body'),
-            (self.author.data, 'author'),
+            (self.question_date.data, 'question_date'),
             (self.answer.data, 'answer'),
+            (self.answer_date.data, 'answer_date'),
+            (self.author.data, 'author'),
             (self.answer_author.data, 'answer_author')
         ]
         return [(int(tuple[0]), tuple[1]) for tuple in columns
