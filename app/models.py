@@ -51,35 +51,44 @@ class UserRoles(db.Model):
 class Question(db.Model):
     __table_args__ = (db.UniqueConstraint('report_id', 'number', name='_report_question_number_uc'),)
 
-    questiontype_id = db.Column(db.Integer, db.ForeignKey('questiontype.id'))
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
+
+    question_type = db.Column(db.Text(MAX_TEXT_LENGTH))
     number = db.Column(db.Integer)
-    body = db.Column(db.Text(MAX_TEXT_LENGTH))
-    context = db.Column(db.Text(MAX_TEXT_LENGTH))
     report_id = db.Column(db.Integer, db.ForeignKey('report.id'))
+
+    context = db.Column(db.Text(MAX_TEXT_LENGTH))
+    body = db.Column(db.Text(MAX_TEXT_LENGTH))
     author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
-    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
-    subtopic_id = db.Column(db.Integer, db.ForeignKey('subtopic.id'))
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    question_date = db.Column(db.DateTime)
+
     answer = db.Column(db.Text(MAX_TEXT_LENGTH))
     answer_author_id = db.Column(db.Integer, db.ForeignKey('answer_author.id'))
-    question_date = db.Column(db.DateTime)
     answer_date = db.Column(db.DateTime)
 
+    topic_id = db.Column(db.Integer, db.ForeignKey('topic.id'))
+    subtopic_id = db.Column(db.Integer, db.ForeignKey('subtopic.id'))
+
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+
     def __init__(self, **kwargs):
-        self.number = kwargs.get('number', None)
-        self.body = kwargs.get('body', '')
-        self.context = kwargs.get('context', '')
-        self.keywords = kwargs.get('keywords', [])
+        self.question_type = kwargs.get('question_type', None)
         self.report_id = kwargs.get('report_id', None)
+        self.number = kwargs.get('number', None)
+
+        self.context = kwargs.get('context', '')
+        self.body = kwargs.get('body', '')
         self.author_id = kwargs.get('author_id', None)
-        self.topic_id = kwargs.get('topic_id', None)
-        self.subtopic_id = kwargs.get('subtopic_id', None)
-        self.answer = kwargs.get('answer', '')
         self.question_date = kwargs.get('question_date', None)
+
+        self.answer = kwargs.get('answer', '')
+        self.answer_author_id = kwargs.get('answer_author_id', None)
         self.answer_date = kwargs.get('answer_date', None)
 
+        self.keywords = kwargs.get('keywords', [])
+        self.topic_id = kwargs.get('topic_id', None)
+        self.subtopic_id = kwargs.get('subtopic_id', None)
 
     @classmethod
     def delete(cls, question_id, db_session):
@@ -97,16 +106,6 @@ class Question(db.Model):
         db_session.commit()
         return question
 
-
-class QuestionType(db.Model):
-    __tablename__ = 'questiontype'
-
-    id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
-    name = db.Column(db.String(MAX_NAME_LENGTH), unique=True)
-    date = db.Column(db.Date())
-    questions = db.relationship('Question', backref='questiontype')
-    created_at = db.Column(db.DateTime, default=datetime.now)
-    modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
 class Report(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)

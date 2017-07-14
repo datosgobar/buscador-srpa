@@ -33,7 +33,7 @@ class SpreadSheetReader:
             for colnum in range(len(data)):
                 data[colnum].append(row[colnum])
             summary['best_row'] = cls._best_row(summary['best_row'], row)
-        summary['datatypes'] = cls._guess_datatypes(data)
+        summary['datatypes'] = cls._guess_datatypes(data)  # data puede no estar definido
         return summary
 
     @classmethod
