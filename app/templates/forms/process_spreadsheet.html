@@ -164,7 +164,7 @@
 
             <div class="col-xs-12 no-padding preview-container">
                 <h5>Previsualización</h5>
-                {% with result = {}, hide_more_info_link = True, hide_actions = True %}
+                {% with result = {'question_type': form.type}, hide_more_info_link = True, hide_actions = True %}
                     {% include 'search/result/question.html' %}
                 {% endwith %}
             </div>
