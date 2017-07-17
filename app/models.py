@@ -78,7 +78,7 @@ class Question(db.Model):
 
         self.context = kwargs.get('context', '')
         self.body = kwargs.get('body', '')
-        self.author_id = kwargs.get('question_author_id', None)
+        self.author_id = kwargs.get('author_id', None)
         self.question_date = kwargs.get('question_date', None)
 
         self.answer = kwargs.get('answer', '')
@@ -142,7 +142,7 @@ class SubTopic(db.Model):
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True, unique=True, autoincrement=True)
     name = db.Column(db.String(MAX_NAME_LENGTH), unique=True)
-    questions_asked = db.relationship('Question', backref='question_author')
-    questions_answered = db.relationship('Question', backref='answer_author')
+    questions_asked = db.relationship('Question', backref='author', foreign_keys='Question.author_id')
+    questions_answered = db.relationship('Question', backref='answer_author', foreign_keys='Question.answer_author_id')
     created_at = db.Column(db.DateTime, default=datetime.now)
     modified_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)

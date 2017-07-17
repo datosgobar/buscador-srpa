@@ -2,7 +2,6 @@ import csv
 from .models import Question, Topic, SubTopic, Author, Report
 import math
 from flask import request, url_for, g
-from sqlalchemy import func
 from textar import TextClassifier
 from datetime import datetime
 from openpyxl import load_workbook
@@ -151,18 +150,12 @@ class Searcher:
                 self.text_classifier.make_classifier(classifier_name, questions_with_topic_ids, subtopic_ids)
 
     @staticmethod
-    def list_models(db_session):
-        def instances_with_at_least_one_question(model):
-            return db_session.query(model). \
-                join(Question). \
-                group_by(model). \
-                having(func.count(Question.id) > 0). \
-                all()
+    def list_models():
         return {
-            u'autor': instances_with_at_least_one_question(Author),
-            u'informe': instances_with_at_least_one_question(Report),
-            u'área de gestión': instances_with_at_least_one_question(SubTopic),
-            u'ministerio': instances_with_at_least_one_question(Topic)
+            u'autor': [author for author in Author.query.all() if len(author.questions_answered) or len(author.questions_asked)],
+            u'informe': [report for report in Report.query.all() if len(report.questions)],
+            u'área de gestión': [subtopic for subtopic in SubTopic.query.all() if len(subtopic.questions)],
+            u'ministerio': [topic for topic in Topic.query.all() if len(topic.questions)]
         }
 
     @staticmethod

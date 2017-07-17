@@ -2,7 +2,7 @@ from flask.ext.wtf import Form
 from wtforms import validators, IntegerField, TextAreaField, BooleanField, SelectField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_user.translations import lazy_gettext as _
-from .models import MAX_TEXT_LENGTH, Question, Report, Topic, SubTopic, Author, AnswerAuthor, get_or_create
+from .models import MAX_TEXT_LENGTH, Question, Report, Topic, SubTopic, Author, get_or_create
 import time
 from .helpers import SpreadSheetReader
 from flask import render_template, redirect, url_for
@@ -34,7 +34,7 @@ class QuestionForm(Form):
     )
 
     def update_choices(self, db_session, searcher):
-        other_models = searcher.list_models(db_session)
+        other_models = searcher.list_models()
         attributes = [
             (u'informe', 'report'),
             (u'autor', 'author'),
@@ -265,7 +265,7 @@ class ProcessSpreadsheetForm(Form):
             db_session.commit()
         if 'answer_author' in question_args.keys():
             question_args['answer_author_id'] = get_or_create(
-                db_session, AnswerAuthor, name=question_args['answer_author'])
+                db_session, Author, name=question_args['answer_author'])
         return question_args
 
     def collect_args(self, row, columns):
