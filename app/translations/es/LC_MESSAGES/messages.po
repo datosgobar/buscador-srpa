@@ -20,13 +20,13 @@ msgstr ""
 
 #: forms.py:14 forms.py:148
 msgid "Question number"
-msgstr "Numero de pregunta"
+msgstr "Número de pregunta"
 
 #: forms.py:15
 msgid ""
 "Question number must be a"
 "                                                   positive integer"
-msgstr "El numero de pregunta debe ser un entero positivo"
+msgstr "El número de pregunta debe ser un entero positivo"
 
 #: forms.py:19 forms.py:149
 msgid "Question body"
@@ -50,7 +50,7 @@ msgstr "Organo requerido"
 
 #: forms.py:29 forms.py:155
 msgid "Question subtopic"
-msgstr "Area de gestion"
+msgstr "Area de gestión"
 
 #: forms.py:31 forms.py:150
 msgid "Question answer"
@@ -70,7 +70,7 @@ msgstr ""
 
 #: forms.py:261
 msgid "Base text to query"
-msgstr "Texto de busqueda"
+msgstr "Texto de búsqueda"
 
 #: templates/search/filters.html:60
 #, python-format
@@ -78,14 +78,14 @@ msgid "%(model_name)s"
 msgstr ""
 
 #~ msgid "Question number must be a positive integer"
-#~ msgstr ""
+#~ msgstr "El número de pregunta debe ser un entero positivo"
 
 #~ msgid "Question justification (optional)"
-#~ msgstr "Justificacion de la Pregunta (opcional)"
+#~ msgstr "Justificación de la Pregunta (opcional)"
 
 #~ msgid "Question answerer"
 #~ msgstr "Responsable de la respuesta"
 
 #~ msgid "Question justification"
-#~ msgstr "Justificacion de la Pregunta"
+#~ msgstr "Justificación de la Pregunta"
 
