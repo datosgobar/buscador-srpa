@@ -58,7 +58,7 @@ class Question(db.Model):
 
     context = db.Column(db.Text(MAX_TEXT_LENGTH))
     body = db.Column(db.Text(MAX_TEXT_LENGTH))
-    question_author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
+    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
     question_date = db.Column(db.DateTime)
 
     answer = db.Column(db.Text(MAX_TEXT_LENGTH))
@@ -78,7 +78,7 @@ class Question(db.Model):
 
         self.context = kwargs.get('context', '')
         self.body = kwargs.get('body', '')
-        self.question_author_id = kwargs.get('question_author_id', None)
+        self.author_id = kwargs.get('question_author_id', None)
         self.question_date = kwargs.get('question_date', None)
 
         self.answer = kwargs.get('answer', '')

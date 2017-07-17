@@ -265,19 +265,18 @@ class ProcessSpreadsheetForm(Form):
             db_session.commit()
         if 'answer_author' in question_args.keys():
             question_args['answer_author_id'] = get_or_create(
-                db_session, AnswerAuthor, name=question_args['author'])
+                db_session, AnswerAuthor, name=question_args['answer_author'])
         return question_args
 
-    @staticmethod
-    def collect_args(row, columns):
-        d = {}
+    def collect_args(self, row, columns):
+        d = {'question_type': self.type}
         for col in columns:
             position = col[0]
             if 0 <= position < len(row):
                 value = row[col[0]].strip()
                 if col[1] in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
                     value = value.lower()
-                if col[1] in ['question_date', 'answer_date']:
+                if col[1] in ['question_date', 'answer_date'] and len(value) > 0:
                     value = value.replace('-', '/')
                     value = value.replace(':', '/')
                     value = datetime.strptime(value, '%d/%m/%Y')
@@ -305,8 +304,10 @@ class ProcessSpreadsheetTaquigraficasForm(ProcessSpreadsheetForm):
             (self.report.data, 'report'),
             (self.context.data, 'context'),
             (self.body.data, 'body'),
-            (self.author.data, 'author'),
+            (self.question_date.data, 'question_date'),
             (self.answer.data, 'answer'),
+            (self.answer_date.data, 'answer_date'),
+            (self.author.data, 'author'),
             (self.answer_author.data, 'answer_author')
         ]
         return [(int(tuple[0]), tuple[1]) for tuple in columns
