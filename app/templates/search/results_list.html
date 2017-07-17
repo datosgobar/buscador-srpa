@@ -27,10 +27,8 @@
                 <select title="order" id="order">
                     <option value="asc" {{ "selected=selected" if query['order'] == 'asc' }}>numero de informe (asc)</option>
                     <option value="desc" {{ "selected=selected" if query['order'] == 'desc' }}>numero de informe (desc)</option>
-                    <!--
-                      <option value="date-asc" {{ "selected=selected" if query['order'] == 'date-asc' }}>fecha (asc)</option>
-                      <option value="date-desc" {{ "selected=selected" if query['order'] == 'date-desc' }}>fecha (desc)</option>
-                    -->
+                    <option value="date-asc" {{ "selected=selected" if query['order'] == 'date-asc' }}>fecha (asc)</option>
+                    <option value="date-desc" {{ "selected=selected" if query['order'] == 'date-desc' }}>fecha (desc)</option>
                 </select>
             {% endif %}
         </div>
