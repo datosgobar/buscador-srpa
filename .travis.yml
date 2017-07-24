@@ -1,0 +1,8 @@
+language: python
+sudo: required
+python:
+    - "3.4"
+install:
+    - bash bin/install
+script:
+    - bash bin/travis

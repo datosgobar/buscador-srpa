@@ -1,0 +1,3 @@
+#!/bin/bash
+server_folder_path=$(dirname $0)
+pip install -r "$server_folder_path/../requirements.txt"

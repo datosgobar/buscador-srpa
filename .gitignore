@@ -8,3 +8,4 @@ venv
 venv3
 runserver.sh
 *.backup
+backup/
