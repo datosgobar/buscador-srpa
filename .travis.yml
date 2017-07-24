@@ -9,6 +9,6 @@ script:
 deploy:
   provider: script
   skip_cleanup: true
-  script: "bin/deploy"
+  script: "bash bin/deploy"
   on:
     tags: true
