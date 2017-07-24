@@ -6,3 +6,9 @@ install:
     - bash bin/install
 script:
     - bash bin/travis
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: "bin/deploy"
+  on:
+    tags: true
