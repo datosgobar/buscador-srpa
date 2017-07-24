@@ -1,8 +1,11 @@
 #!/bin/bash
-sudo apt-get install -y sshpass
 
-sshpass -p $PASS_SSH_DEV ssh -p $PORT_SSH_DEV $USER_SSH_DEV@$IP_DEV
+echo 'script de deploy'
 
-cd /home/user/text-classifier
-ls -hal
-exit
+# apt-get install -y sshpass
+
+# sshpass -p $PASS_SSH_DEV ssh -p $PORT_SSH_DEV $USER_SSH_DEV@$IP_DEV
+
+# cd /home/user/text-classifier
+# ls -hal
+# exit
