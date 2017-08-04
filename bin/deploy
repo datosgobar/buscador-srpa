@@ -1,9 +1,8 @@
 #!/bin/bash
 
 echo 'script de deploy'
-
-ssh $USER_SSH_DEV@$IP_DEV
-cd /home/user/text-classifier
-ls -hal
-git status
-exit
+DEPLOY_SCRIPT="cd /home/user/text-classifier;
+ls -hal;
+git status;
+touch deploy_worked;"
+ssh -p 22210 $USER_SSH_DEV@$IP_DEV "${DEPLOY_SCRIPT}"
