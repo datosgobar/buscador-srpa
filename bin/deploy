@@ -2,10 +2,8 @@
 
 echo 'script de deploy'
 
-# apt-get install -y sshpass
-
-# sshpass -p $PASS_SSH_DEV ssh -p $PORT_SSH_DEV $USER_SSH_DEV@$IP_DEV
-
-# cd /home/user/text-classifier
-# ls -hal
-# exit
+ssh $USER_SSH_DEV@$IP_DEV
+cd /home/user/text-classifier
+ls -hal
+git status
+exit
