@@ -1,5 +1,5 @@
 addons:
-  ssh_known_hosts: [181.209.63.223]:22210
+  ssh_known_hosts: "[181.209.63.223]:22210"
 language: python
 sudo: required
 python:
