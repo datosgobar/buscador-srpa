@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo 'script de deploy'
+ssh-keyscan -p 22210 181.209.63.223 >> ~/.ssh/known_hosts
 DEPLOY_SCRIPT="cd /home/user/text-classifier;
 ls -hal;
 git status;
