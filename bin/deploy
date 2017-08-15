@@ -1,11 +1,11 @@
 #!/bin/bash
+echo '--- Iniciando el script de deploy ---'
 
-echo 'script de deploy'
-
-# apt-get install -y sshpass
-
-# sshpass -p $PASS_SSH_DEV ssh -p $PORT_SSH_DEV $USER_SSH_DEV@$IP_DEV
-
-# cd /home/user/text-classifier
-# ls -hal
-# exit
+ssh-keyscan -p 22210 181.209.63.223 >> ~/.ssh/known_hosts
+DEPLOY_SCRIPT="
+cd /home/user/text-classifier;
+git fetch;
+git checkout -b v${TRAVIS_TAG} ${TRAVIS_TAG};
+echo '${PASS_SSH_DEV}' | sudo -S service text-classifier restart;
+"
+ssh -p 22210 $USER_SSH_DEV@$IP_DEV "${DEPLOY_SCRIPT}"
