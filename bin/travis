@@ -1,0 +1,3 @@
+#!/bin/bash
+server_folder_path=$(dirname $0)
+python "$server_folder_path/../main.py" create_db

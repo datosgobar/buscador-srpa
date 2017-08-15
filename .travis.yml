@@ -1,0 +1,14 @@
+language: python
+sudo: required
+python:
+    - "3.4"
+install:
+    - bash bin/install
+script:
+    - bash bin/travis
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: "bash bin/deploy"
+  on:
+    tags: true
