@@ -46,6 +46,21 @@
                 </div>
             {% endblock %}
 
+            {% block question_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.question_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.question_date(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+                </div>
+            {% endblock %}
+
+
             <div class="col-xs-12 no-padding select-group">
                 <div class="col-xs-12 col-sm-6 field-label-container">
                     {{ form.context.label() }}
@@ -96,6 +111,20 @@
                 </div>
             {% endblock %}
 
+            {% block answer_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.answer_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.answer_date(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+                </div>
+            {% endblock %}
+
             {% block topic %}
                 <div class="col-xs-12 no-padding select-group">
                     <div class="col-xs-12 col-sm-6 field-label-container">
@@ -135,7 +164,7 @@
 
             <div class="col-xs-12 no-padding preview-container">
                 <h5>Previsualización</h5>
-                {% with result = {}, hide_more_info_link = True, hide_actions = True %}
+                {% with result = {'question_type': form.type}, hide_more_info_link = True, hide_actions = True %}
                     {% include 'search/result/question.html' %}
                 {% endwith %}
             </div>

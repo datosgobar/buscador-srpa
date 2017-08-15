@@ -20,4 +20,14 @@
             Sin autor
         {%- endif -%}
     </small>
+    <small data-attribute-name="question_date"
+           data-attribute-default="Sin fecha de pregunta"
+           data-attribute-display-template="Fecha de pregunta: $">
+        {%- if result.question_date -%}
+            Fecha de pregunta:
+            {{ result.question_date|date_format_ar }}
+        {%- else -%}
+            Sin fecha de pregunta
+        {%- endif -%}
+    </small>
 </blockquote>

@@ -33,7 +33,7 @@ class SpreadSheetReader:
             for colnum in range(len(data)):
                 data[colnum].append(row[colnum])
             summary['best_row'] = cls._best_row(summary['best_row'], row)
-        summary['datatypes'] = cls._guess_datatypes(data)
+        summary['datatypes'] = cls._guess_datatypes(data)  # data puede no estar definido
         return summary
 
     @classmethod
@@ -202,6 +202,9 @@ class Searcher:
     def _order_results(results, query):
         if query['order'] in ('asc', 'desc'):
             return sorted(results, key=lambda x: (x.report.name, x.number), reverse=query['order'] == 'desc')
+        elif query['order'] in ('date-asc', 'date-desc'):
+            # TODO: manejar fechas None
+            return sorted(results, key=lambda x: x.question_date, reverse=query['order'] == 'date-desc')
         else:
             return results
 
@@ -373,6 +376,8 @@ class Searcher:
         args = {}
         if 'text' in query and query['text'] is not None:
             args['q'] = query['text']
+        if 'order' in query:
+            args['order'] = query['order']
         for title, value in query['filters'].items():
             args[title] = value
         if page is not None:

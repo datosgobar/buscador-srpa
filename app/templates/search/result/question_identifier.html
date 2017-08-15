@@ -1,25 +1,28 @@
+{% set type_name = 'Informe' if result.question_type == 'informes' else 'Taquigráfica' %}
 <p class="text-muted">
     <span class="resport-name"
           data-attribute-name="report"
-          data-attribute-default="Informe sin nombre"
-          data-attribute-display-template="Informe $">
+          data-attribute-default="{{type_name}} sin nombre"
+          data-attribute-display-template="{{type_name}} $">
         {% if result.report %}
-            Informe {{ result.report.name }}
+            {{type_name}} {{ result.report.name }}
         {% else %}
-            Informe sin nombre
+            {{type_name}} sin nombre
         {% endif %}
     </span>
 
-    <span class="number"
-          data-attribute-name="number"
-          data-attribute-default="Pregunta sin número"
-          data-attribute-display-template="Pregunta <i class='fa fa-hashtag' aria-hidden='true'></i> $">
-        {% if result.number %}
-            Pregunta
-            <i class="fa fa-hashtag" aria-hidden="true"></i>
-            {{ result.number }}
-        {% else %}
-            Pregunta sin número
-        {% endif %}
-    </span>
+    {% if result.question_type == 'informes' %}
+        <span class="number"
+              data-attribute-name="number"
+              data-attribute-default="Pregunta sin número"
+              data-attribute-display-template="Pregunta <i class='fa fa-hashtag' aria-hidden='true'></i> $">
+            {% if result.number %}
+                Pregunta
+                <i class="fa fa-hashtag" aria-hidden="true"></i>
+                {{ result.number }}
+            {% else %}
+                Pregunta sin número
+            {% endif %}
+        </span>
+    {% endif %}
 </p>

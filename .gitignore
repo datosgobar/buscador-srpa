@@ -9,3 +9,5 @@ venv3
 runserver.sh
 *.backup
 backup/
+migrations/*.sql
+*.sqlite.bck

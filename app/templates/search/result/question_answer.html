@@ -9,14 +9,27 @@
             Pregunta sin respuesta
         {% endif %}
     </p>
-    <small data-attribute-name="author_answer"
-           data-attribute-default="Sin autor"
-           data-attribute-display-template="Autor: $">
-        {%- if result.answer_author and result.answer_author.name and result.answer_author.name|length > 0 -%}
-            Autor:
-            {{ result.answer_author.name }}
+    {% if result.question_type == 'taquigraficas' %}
+        <small data-attribute-name="answer_author"
+               data-attribute-default="Sin autor"
+               data-attribute-display-template="Autor: $">
+            {%- if result.answer_author and result.answer_author.name and result.answer_author.name|length > 0 -%}
+                Autor:
+                {{ result.answer_author.name }}
+            {%- else -%}
+                Sin autor
+            {%- endif -%}
+
+        </small>
+    {% endif %}
+    <small data-attribute-name="answer_date"
+           data-attribute-default="Sin fecha de respuesta"
+           data-attribute-display-template="Fecha de respuesta: $">
+        {%- if result.answer_date -%}
+            Fecha de respuesta:
+            {{ result.answer_date|date_format_ar }}
         {%- else -%}
-            Sin autor
+            Sin fecha de respuesta
         {%- endif -%}
     </small>
 </blockquote>
