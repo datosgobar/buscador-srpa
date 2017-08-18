@@ -201,10 +201,14 @@ class Searcher:
     @staticmethod
     def _order_results(results, query):
         if query['order'] in ('asc', 'desc'):
-            return sorted(results, key=lambda x: (x.report.name, x.number), reverse=query['order'] == 'desc')
+            return sorted(results, key=lambda x: (x.report.name, x.number),
+                          reverse=query['order'] == 'desc')
         elif query['order'] in ('date-asc', 'date-desc'):
-            # TODO: manejar fechas None
-            return sorted(results, key=lambda x: x.question_date, reverse=query['order'] == 'date-desc')
+            none_res = filter(lambda x: x.question_date is None, results)
+            not_none_res = filter(lambda x: x.question_date is not None, results)
+            ord_results = sorted(not_none_res, key=lambda x: x.question_date,
+                                 reverse=query['order'] == 'date-desc')
+            return list(ord_results) + list(none_res)
         else:
             return results
 
