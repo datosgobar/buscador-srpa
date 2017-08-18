@@ -25,15 +25,16 @@ class SpreadSheetReader:
             raise Exception('Formato no soportado')
 
         summary = {'best_row': []}
+        data = []
         for i, row in spreadsheet:
             if i == 0:
                 summary['first_row'] = row
                 data = [[] for col in row]
                 continue
             for colnum in range(len(data)):
-                data[colnum].append(row[colnum])
+                data[colnum].append(str(row[colnum]))
             summary['best_row'] = cls._best_row(summary['best_row'], row)
-        summary['datatypes'] = cls._guess_datatypes(data)  # data puede no estar definido
+        summary['datatypes'] = cls._guess_datatypes(data)
         return summary
 
     @classmethod
@@ -49,11 +50,19 @@ class SpreadSheetReader:
     def read_xlsx(cls, xlsx_file_path):
         wb = load_workbook(xlsx_file_path, read_only=True)
         first_sheet = wb[wb.sheetnames[0]]
+
+        def cell_value(cell):
+            if cell.is_date:
+                return cell.value.date()
+            return str(cell.value or '').strip()
+
         for i, row in enumerate(first_sheet):
-            yield (i, [str(cell.value or '') for cell in row])
+            yield (i, [cell_value(cell) for cell in row])
 
     @staticmethod
     def _best_row(first_row, second_row):
+        first_row = [str(value) for value in first_row]
+        second_row = [str(value) for value in second_row]
 
         def columns_with_values(row):
             return sum([1 for field in row if len(field.strip()) > 0])

@@ -1,5 +1,5 @@
 from flask.ext.wtf import Form
-from wtforms import validators, IntegerField, TextAreaField, BooleanField, SelectField
+from wtforms import validators, IntegerField, TextAreaField, BooleanField, SelectField, RadioField
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from flask_user.translations import lazy_gettext as _
 from .models import MAX_TEXT_LENGTH, Question, Report, Topic, SubTopic, Author, AnswerAuthor, get_or_create
@@ -151,13 +151,16 @@ class UploadForm(Form):
 
 
 class ProcessSpreadsheetForm(Form):
+    date_formats = [('%d/%m/%Y', 'DD/MM/AAAA'), ('%m/%d/%Y', 'MM/DD/AAAA'), ('%Y/%m/%d', 'AAAA/MM/DD')]
     type = 'informes'
     discard_first_row = BooleanField(_('First row is header'), default=True)
     number = SelectField(_('Question number'), [validators.DataRequired("Requerido")])
     body = SelectField(_('Question body'), [validators.DataRequired("Requerido")])
     question_date = SelectField(_('Question date'))
+    question_date_format = RadioField(choices=date_formats, default=date_formats[0][0])
     answer = SelectField(_('Question answer'))
     answer_date = SelectField(_('Answer date'))
+    answer_date_format = RadioField(choices=date_formats, default=date_formats[0][0])
     context = SelectField(_('Question context'))
     report = SelectField(_('Report number'))
     author = SelectField(_('Question author'))
@@ -273,13 +276,15 @@ class ProcessSpreadsheetForm(Form):
         for col in columns:
             position = col[0]
             if 0 <= position < len(row):
-                value = row[col[0]].strip()
-                if col[1] in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
+                value = row[position]
+                col_name = col[1]
+                if col_name in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
                     value = value.lower()
-                if col[1] in ['question_date', 'answer_date'] and len(value) > 0:
+                if col_name in ['question_date', 'answer_date'] and isinstance(value, str) and len(value) > 0:
                     value = value.replace('-', '/')
                     value = value.replace(':', '/')
-                    value = datetime.strptime(value, '%d/%m/%Y')
+                    date_format = getattr(self, col[1] + '_format').data
+                    value = datetime.strptime(value, date_format)
             else:
                 value = ''
             d[col[1]] = value
