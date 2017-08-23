@@ -6,10 +6,7 @@ from sqlalchemy import func
 from textar import TextClassifier
 from datetime import datetime
 from openpyxl import load_workbook
-
-
-class CSVDelimiterError(Exception):
-    pass
+from . import SRPAException, FileNotSupportedException
 
 
 class SpreadSheetReader:
@@ -26,7 +23,7 @@ class SpreadSheetReader:
         elif extension == 'xlsx':
             spreadsheet = cls.read_xlsx(file_path)
         else:
-            raise Exception('Formato no soportado')
+            raise FileNotSupportedException
 
         summary = {'best_row': []}
         data = []
@@ -48,7 +45,7 @@ class SpreadSheetReader:
             first_row = file_content.split('\n')[0]
             semicolon_separated = first_row.count(';') >= first_row.count(',')
             if semicolon_separated:
-                raise CSVDelimiterError
+                raise SRPAException(message='Error de delimitador de csv', description='La planilla no está delimitada por comas')
             dialect = csv.Sniffer().sniff(file_content, delimiters=',')
             csvfile.seek(0)
             reader = csv.reader(csvfile, dialect)

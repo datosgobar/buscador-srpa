@@ -8,6 +8,7 @@ from .helpers import SpreadSheetReader
 from flask import render_template, redirect, url_for
 from datetime import datetime
 from sqlalchemy import func
+from . import FileNotSupportedException
 
 
 class QuestionForm(Form):
@@ -151,7 +152,7 @@ class UploadForm(Form):
 
 
 class ProcessSpreadsheetForm(Form):
-    date_formats = [('%d/%m/%Y', 'DD/MM/AAAA'), ('%m/%d/%Y', 'MM/DD/AAAA'), ('%Y/%m/%d', 'AAAA/MM/DD')]
+    date_formats = [('%d/%m/%Y', 'DD/MM/AAAA'), ('%m/%d/%Y', 'MM/DD/AAAA')]
     type = 'informes'
     discard_first_row = BooleanField(_('First row is header'), default=True)
     number = SelectField(_('Question number'), [validators.DataRequired("Requerido")])
@@ -212,7 +213,7 @@ class ProcessSpreadsheetForm(Form):
         elif extension == 'xlsx':
             spreadsheet = SpreadSheetReader.read_xlsx(file_path)
         else:
-            raise Exception('Formato no soportado')
+            raise FileNotSupportedException
 
         created_at = datetime.now().replace(microsecond=0)
 
@@ -280,11 +281,14 @@ class ProcessSpreadsheetForm(Form):
                 col_name = col[1]
                 if col_name in ['author', 'report', 'topic', 'subtopic', 'answer_author']:
                     value = value.lower()
-                if col_name in ['question_date', 'answer_date'] and isinstance(value, str) and len(value) > 0:
-                    value = value.replace('-', '/')
-                    value = value.replace(':', '/')
-                    date_format = getattr(self, col[1] + '_format').data
-                    value = datetime.strptime(value, date_format)
+                if col_name in ['question_date', 'answer_date'] and isinstance(value, str):
+                    if len(value) > 0:
+                        value = value.replace('-', '/')
+                        value = value.replace(':', '/')
+                        date_format = getattr(self, col[1] + '_format').data
+                        value = datetime.strptime(value, date_format)
+                    else:
+                        value = None
             else:
                 value = ''
             d[col[1]] = value
