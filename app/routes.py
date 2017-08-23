@@ -1,7 +1,8 @@
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, redirect
 from flask_user import login_required, roles_required
 from .forms import QuestionForm, UploadForm, ProcessSpreadsheetForm, FullTextQueryForm, ProcessSpreadsheetTaquigraficasForm
 from .models import Question
+from .helpers import CSVDelimiterError
 
 
 def init_routes(app, db_session, searcher):
@@ -28,15 +29,25 @@ def init_routes(app, db_session, searcher):
     @login_required
     @roles_required('admin')
     def process_spreadsheet(filename):
-        process_spreadsheet_form = ProcessSpreadsheetForm()
-        return process_spreadsheet_form.handle_request(filename, db_session, searcher)
+        try:
+            process_spreadsheet_form = ProcessSpreadsheetForm()
+            return process_spreadsheet_form.handle_request(filename, db_session, searcher)
+        except UnicodeDecodeError:
+            return redirect('/error_codificacion')
+        except CSVDelimiterError:
+            return redirect('/error_delimitador')
 
     @app.route('/carga_de_preguntas/procesar_planilla_taquigraficas/<filename>', methods=['GET', 'POST'])
     @login_required
     @roles_required('admin')
     def process_spreadsheet_taquigraficas(filename):
-        process_spreadsheet_form = ProcessSpreadsheetTaquigraficasForm()
-        return process_spreadsheet_form.handle_request(filename, db_session, searcher)
+        try:
+            process_spreadsheet_form = ProcessSpreadsheetTaquigraficasForm()
+            return process_spreadsheet_form.handle_request(filename, db_session, searcher)
+        except UnicodeDecodeError:
+            return redirect('/error_codificacion')
+        except CSVDelimiterError:
+            return redirect('/error_delimitador')
 
     @app.route('/busqueda_por_similaridad', methods=['GET', 'POST'])
     @login_required
@@ -107,3 +118,13 @@ def init_routes(app, db_session, searcher):
         result = Question.update(question_id, db_session, request.values)
         searcher.restart_text_classifier()
         return render_template('/search/result/question.html', result=result, best_words=False)
+
+    @app.route('/error_codificacion')
+    @login_required
+    def encoding_error():
+        return render_template('/error/encoding.html')
+
+    @app.route('/error_delimitador')
+    @login_required
+    def delimiter_error():
+        return render_template('/error/delimiter.html')
