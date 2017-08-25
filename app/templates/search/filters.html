@@ -1,3 +1,9 @@
+<!--
+TODO:
+- Si hay un filtro de fecha en la url entonces no se muestra disponible para agregar filtro de fecha
+- Si hay filtr ode fecha en la url entonces se muestra como tarjeta el filtro para poder ser eliminado
+ -->
+
 <section class="container-fluid" id="search-filters">
     <div class="row panels-row">
         {% if query.text and query.text|length > 0 %}
@@ -60,12 +66,22 @@
                                             {% trans %}{{ model_name }}{% endtrans %}
                                         </option>
                                     {% endfor %}
+                                    {% set can_add_date_filter = True %}
+                                    {% if can_add_date_filter %}
+                                        <option value="date">fecha</option>
+                                    {% endif %}
                                 </select>
                             </label>
                             <label id="filter-comparision-container">
                                 <select id="filter-comparision">
                                     <option value="equal-to">igual a</option>
                                     <option value="different-to">distinto a</option>
+                                </select>
+                            </label>
+                            <label id="date-filter-comparision-container" class="hidden">
+                                <select id="date-filter-comparision">
+                                    <option value="greater-than">mayor igual a</option>
+                                    <option value="less-than">menor igual a</option>
                                 </select>
                             </label>
                             {% for model_name in other_models.keys() %}
@@ -77,6 +93,9 @@
                                     </select>
                                 </label>
                             {% endfor %}
+                            <label class="filter-value hidden" data-filter-type="date">
+                                <input type="text" id="date-filter-value">
+                            </label>
                         </div>
                         <div class="col-xs-12 actions">
                             <button class="btn btn-sm btn-default cancel-filter">Cancelar</button>

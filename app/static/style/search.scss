@@ -48,6 +48,17 @@
         margin-bottom: 0;
       }
     }
+
+    label {
+        vertical-align: middle;
+
+        #date-filter-value {
+            border: solid 1px #aaa;
+            border-radius: 4px;
+            height: 28px;
+            padding-left: 8px;
+        }
+    }
   }
 }
 
