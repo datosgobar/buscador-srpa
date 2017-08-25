@@ -60,7 +60,7 @@ $(function() {
         var selectedFilterName = searchFilters.find('#filter-type option:selected').val();
         var newArgs = currentArgs();
         var translations = {
-            'informe': 'informe', 'autor': 'autor', 'date': 'fecha',
+            'origen': 'origen', 'autor': 'autor', 'date': 'fecha',
             'ministerio': 'ministerio', 'área de gestión': 'area'
         };
 

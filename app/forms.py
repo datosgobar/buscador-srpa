@@ -37,7 +37,7 @@ class QuestionForm(Form):
     def update_choices(self, db_session, searcher):
         other_models = searcher.list_models(db_session)
         attributes = [
-            (u'informe', 'report'),
+            (u'oriden del dato', 'report'),
             (u'autor', 'author'),
             (u'ministerio', 'topic'),
             (u'área de gestión', 'subtopic')

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2017-07-10 15:46-0300\n"
+"POT-Creation-Date: 2017-08-25 15:56-0300\n"
 "PO-Revision-Date: 2016-10-12 10:34-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: es\n"
@@ -16,83 +16,83 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.3.4\n"
+"Generated-By: Babel 2.4.0\n"
 
-#: forms.py:15 forms.py:156 forms.py:295
+#: forms.py:16 forms.py:158 forms.py:303
 msgid "Question number"
 msgstr "Numero de pregunta"
 
-#: forms.py:16
+#: forms.py:17
 msgid ""
 "Question number must be a"
 "                                                   positive integer"
 msgstr "El numero de pregunta debe ser un entero positivo"
 
-#: forms.py:20 forms.py:157
+#: forms.py:21 forms.py:159
 msgid "Question body"
 msgstr "Texto de la pregunta"
 
-#: forms.py:24
+#: forms.py:25
 msgid "Question context (optional)"
 msgstr "Contexto de la pregunta (opcional)"
 
-#: forms.py:27 forms.py:162
+#: forms.py:28 forms.py:166
 msgid "Report number"
-msgstr "Informe"
+msgstr "Origen"
 
-#: forms.py:28 forms.py:163
+#: forms.py:29 forms.py:167
 msgid "Question author"
 msgstr "Autor de la pregunta"
 
-#: forms.py:29 forms.py:164 forms.py:296
+#: forms.py:30 forms.py:168 forms.py:304
 msgid "Question topic"
 msgstr "Organo requerido"
 
-#: forms.py:30 forms.py:165 forms.py:297
+#: forms.py:31 forms.py:169 forms.py:305
 msgid "Question subtopic"
 msgstr "Area de gestion"
 
-#: forms.py:32 forms.py:159
+#: forms.py:33 forms.py:162
 msgid "Question answer"
 msgstr "Texto de la respuesta"
 
-#: forms.py:133
+#: forms.py:134
 msgid "Question type"
-msgstr ""
+msgstr "Tipo de pregunta"
 
-#: forms.py:155
+#: forms.py:157
 msgid "First row is header"
 msgstr "Contiene encabezado"
 
-#: forms.py:158
+#: forms.py:160
 msgid "Question date"
 msgstr "Fecha de la pregunta"
 
-#: forms.py:160
+#: forms.py:163
 msgid "Answer date"
 msgstr "Fecha de la Respuesta"
 
-#: forms.py:161
+#: forms.py:165
 msgid "Question context"
 msgstr "Contexto de la pregunta"
 
-#: forms.py:188
+#: forms.py:192
 msgid "None"
 msgstr ""
 
-#: forms.py:292
-msgid "Nombre de la comisiÃ³n"
+#: forms.py:300
+msgid "Nombre de la comisión"
 msgstr ""
 
-#: forms.py:294
+#: forms.py:302
 msgid "Autor de la respuesta"
 msgstr ""
 
-#: forms.py:334
+#: forms.py:344
 msgid "Base text to query"
 msgstr "Texto de busqueda"
 
-#: templates/search/filters.html:60
+#: templates/search/filters.html:63
 #, python-format
 msgid "%(model_name)s"
 msgstr ""
@@ -111,3 +111,7 @@ msgstr ""
 
 #~ msgid "Nombre de la comisión"
 #~ msgstr ""
+
+#~ msgid "Nombre de la comisiÃ³n"
+#~ msgstr ""
+

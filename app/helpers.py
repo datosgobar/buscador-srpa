@@ -175,7 +175,7 @@ class Searcher:
                 all()
         return {
             u'autor': instances_with_at_least_one_question(Author),
-            u'informe': instances_with_at_least_one_question(Report),
+            u'origen': instances_with_at_least_one_question(Report),
             u'área de gestión': instances_with_at_least_one_question(SubTopic),
             u'ministerio': instances_with_at_least_one_question(Topic)
         }
@@ -277,7 +277,7 @@ class Searcher:
             'ministerio': ('topic_id', Topic),
             'area': ('subtopic_id', SubTopic),
             'autor': ('author_id', Author),
-            'informe': ('report_id', Report),
+            'origen': ('report_id', Report),
             'fecha': ('question_date', None),
             'creado-en': ('created_at', None)
         }
@@ -385,7 +385,7 @@ class Searcher:
             'ministerio', 'ministerio-comparacion',
             'area', 'area-comparacion',
             'autor', 'autor-comparacion',
-            'informe', 'informe-comparacion',
+            'origen', 'origen-comparacion',
             'organismo-requerido',
             'pregunta', 'creado-en',
             'fecha', 'fecha-comparacion'
