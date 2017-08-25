@@ -7,6 +7,7 @@ from sqlalchemy import func
 from textar import TextClassifier
 from datetime import datetime
 from openpyxl import load_workbook
+from . import SRPAException, FileNotSupportedException
 
 
 class SpreadSheetReader:
@@ -23,7 +24,8 @@ class SpreadSheetReader:
         elif extension == 'xlsx':
             spreadsheet = cls.read_xlsx(file_path)
         else:
-            raise Exception('Formato no soportado')
+            raise FileNotSupportedException
+
         summary = {'best_row': []}
         data = []
         for i, row in spreadsheet:
@@ -31,7 +33,7 @@ class SpreadSheetReader:
                 summary['first_row'] = row
                 data = [[] for col in row]
                 continue
-            for colnum in range(len(data)):
+            for colnum in range(min(len(data), len(row))):
                 data[colnum].append(str(row[colnum]))
             summary['best_row'] = cls._best_row(summary['best_row'], row)
         summary['datatypes'] = cls._guess_datatypes(data)
@@ -40,7 +42,12 @@ class SpreadSheetReader:
     @classmethod
     def read_csv(cls, csv_path):
         with open(csv_path, 'r', encoding='utf-8') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(), delimiters=',')
+            file_content = csvfile.read()
+            first_row = file_content.split('\n')[0]
+            semicolon_separated = first_row.count(';') >= first_row.count(',')
+            if semicolon_separated:
+                raise SRPAException(message='Error de delimitador de csv', description='La planilla no está delimitada por comas')
+            dialect = csv.Sniffer().sniff(file_content, delimiters=',')
             csvfile.seek(0)
             reader = csv.reader(csvfile, dialect)
             for i, row in enumerate(reader):

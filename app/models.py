@@ -1,4 +1,4 @@
-from . import db
+from . import db, SRPAException
 from flask_user import UserMixin
 from datetime import datetime
 
@@ -76,6 +76,10 @@ class Question(db.Model):
         self.question_type = kwargs.get('question_type', None)
         self.report_id = kwargs.get('report_id', None)
         self.number = kwargs.get('number', None)
+        if not isinstance(self.number, int):
+            message = 'Error al interpretar la columna "Numero"'
+            description = '{number} no es un numero'.format(number=str(self.number))
+            raise SRPAException(message=message, description=description)
 
         self.context = kwargs.get('context', '')
         self.body = kwargs.get('body', '')

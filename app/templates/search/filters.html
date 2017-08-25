@@ -22,7 +22,10 @@
                             Viendo preguntas que 
                             {{ 'tengan' if query.filters[filter_name]|length > 0 else 'no tengan' }} 
                             {{ filter_name }}
-                            {% if query.filters[filter_name]|length > 0 %}
+                            {% if filter_name == 'fecha' %}
+                                {{ 'mayor o igual a' if filter_comparision == 'mayorigual' else 'menor o igual a' }}
+                                {{ query.filters[filter_name]|date_str_to_date|date_format_ar }}
+                            {% elif query.filters[filter_name]|length > 0 %}
                                 {{ 'igual a' if filter_comparision == 'igualdad' else 'distinto a' }}
                                 "{{ query.filters[filter_name] }}"
                             {% endif %}
@@ -60,12 +63,22 @@
                                             {% trans %}{{ model_name }}{% endtrans %}
                                         </option>
                                     {% endfor %}
+                                    {% set can_add_date_filter = 'fecha' not in query.filters %}
+                                    {% if can_add_date_filter %}
+                                        <option value="date">fecha</option>
+                                    {% endif %}
                                 </select>
                             </label>
                             <label id="filter-comparision-container">
                                 <select id="filter-comparision">
                                     <option value="equal-to">igual a</option>
                                     <option value="different-to">distinto a</option>
+                                </select>
+                            </label>
+                            <label id="date-filter-comparision-container" class="hidden">
+                                <select id="date-filter-comparision">
+                                    <option value="greater-than">mayor igual a</option>
+                                    <option value="less-than">menor igual a</option>
                                 </select>
                             </label>
                             {% for model_name in other_models.keys() %}
@@ -77,6 +90,9 @@
                                     </select>
                                 </label>
                             {% endfor %}
+                            <label class="filter-value hidden" data-filter-type="date">
+                                <input type="text" id="date-filter-value">
+                            </label>
                         </div>
                         <div class="col-xs-12 actions">
                             <button class="btn btn-sm btn-default cancel-filter">Cancelar</button>

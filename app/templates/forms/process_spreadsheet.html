@@ -200,7 +200,20 @@
                    var warningEl = $(this).parents('.select-group').find('.type-warning');
                    if (attributeColumnNumber > -1) {
                      var valueTemplate = $attributePreviewElement.data('attribute-display-template');
-                     attributeValue = valueTemplate.replace('$', bestRowFromSpreadsheet[attributeColumnNumber]);
+                     var spreadsheetValue = bestRowFromSpreadsheet[attributeColumnNumber];
+                     if (attributeName.indexOf('date') != -1) {
+                         var dateFormat = $select.parents('.select-group').find('input[type="radio"]:checked').val() == '%d/%m/%Y' ? 'D/M/YYYY' : 'M/D/YYYY';
+                         var date = moment(spreadsheetValue.split('-').join('/'), dateFormat).locale('es');
+                         if (date.isValid()) {
+                             var day = date.format('D');
+                             var month = date.format('MMMM')
+                             var year = date.format('YYYY');
+                             spreadsheetValue = day + ' de ' + month + ' de ' + year;
+                         } else {
+                             spreadsheetValue = 'INVALIDA';
+                         }
+                     }
+                     attributeValue = valueTemplate.replace('$', spreadsheetValue);
                      if ($.inArray(desiredTypes[i], spreadsheetTypes[attributeColumnNumber].types) == -1){
                            msg = 'No coincide el tipo de dato. Se esperaba ' +  desiredTypes[i] + ' y fue ' +  spreadsheetTypes[attributeColumnNumber].types;
                      }else {
@@ -245,6 +258,7 @@
             var bestRowFromSpreadsheet = {{ spreadsheet_summary.best_row|tojson|safe }};
             var selects = $('form select');
             selects.on('change', update_example);
+            $('.select-group input[type="radio"]').on('change', update_example);
             update_example();
         })
     </script>
