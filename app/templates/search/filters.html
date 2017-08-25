@@ -1,9 +1,3 @@
-<!--
-TODO:
-- Si hay un filtro de fecha en la url entonces no se muestra disponible para agregar filtro de fecha
-- Si hay filtr ode fecha en la url entonces se muestra como tarjeta el filtro para poder ser eliminado
- -->
-
 <section class="container-fluid" id="search-filters">
     <div class="row panels-row">
         {% if query.text and query.text|length > 0 %}
@@ -28,7 +22,10 @@ TODO:
                             Viendo preguntas que 
                             {{ 'tengan' if query.filters[filter_name]|length > 0 else 'no tengan' }} 
                             {{ filter_name }}
-                            {% if query.filters[filter_name]|length > 0 %}
+                            {% if filter_name == 'fecha' %}
+                                {{ 'mayor o igual a' if filter_comparision == 'mayorigual' else 'menor o igual a' }}
+                                {{ query.filters[filter_name]|date_str_to_date|date_format_ar }}
+                            {% elif query.filters[filter_name]|length > 0 %}
                                 {{ 'igual a' if filter_comparision == 'igualdad' else 'distinto a' }}
                                 "{{ query.filters[filter_name] }}"
                             {% endif %}
@@ -66,7 +63,7 @@ TODO:
                                             {% trans %}{{ model_name }}{% endtrans %}
                                         </option>
                                     {% endfor %}
-                                    {% set can_add_date_filter = True %}
+                                    {% set can_add_date_filter = 'fecha' not in query.filters %}
                                     {% if can_add_date_filter %}
                                         <option value="date">fecha</option>
                                     {% endif %}
