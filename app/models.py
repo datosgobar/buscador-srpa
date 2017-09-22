@@ -77,9 +77,12 @@ class Question(db.Model):
         self.report_id = kwargs.get('report_id', None)
         self.number = kwargs.get('number', None)
         if not isinstance(self.number, int):
-            message = 'Error al interpretar la columna "Numero"'
-            description = '{number} no es un numero'.format(number=str(self.number))
-            raise SRPAException(message=message, description=description)
+            try:
+                self.number = int(self.number)
+            except ValueError:
+                message = 'Error al interpretar la columna "Numero"'
+                description = '{number} no es un numero'.format(number=str(self.number))
+                raise SRPAException(message=message, description=description)
 
         self.context = kwargs.get('context', '')
         self.body = kwargs.get('body', '')

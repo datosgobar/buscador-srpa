@@ -387,7 +387,7 @@ class Searcher:
             'autor', 'autor-comparacion',
             'origen', 'origen-comparacion',
             'organismo-requerido',
-            'pregunta', 'creado-en',
+            'pregunta', 'creado-en', 'creado-en-comparacion',
             'fecha', 'fecha-comparacion'
         ]
         query = {

@@ -176,7 +176,7 @@ class ProcessSpreadsheetForm(Form):
         if self.validate_on_submit():
             created_at = self.save_models(filename, db_session)
             searcher.restart_text_classifier()
-            kwargs = {'creado-en': str(created_at)}
+            kwargs = {'creado-en': str(created_at), 'creado-en-comparacion': 'mayorigual'}
             return redirect(url_for('search', **kwargs))
         else:
             print(self.errors)
