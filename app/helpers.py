@@ -59,7 +59,7 @@ class SpreadSheetReader:
         first_sheet = wb[wb.sheetnames[0]]
         def cell_value(cell):
             if cell.is_date:
-                return cell.value.date()
+                return cell.value.strftime('%d-%m-%Y')
             return str(cell.value or '').strip()
 
         for i, row in enumerate(first_sheet):
