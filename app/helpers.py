@@ -308,8 +308,10 @@ class Searcher:
         if ids is not None and sql_filter is not None:
             sql_filter = (sql_filter) & (Question.id.in_(ids))
             results = Question.query.filter(sql_filter).all()
+            results = sorted(results, key=lambda x: ids.index(x.id))
         elif ids is not None:
             results = Question.query.filter(Question.id.in_(ids)).all()
+            results = sorted(results, key=lambda x: ids.index(x.id))
         elif sql_filter is not None:
             results = Question.query.filter(sql_filter).all()
         else:
@@ -351,7 +353,7 @@ class Searcher:
             max_options = per_page
         ids_sim, dist, best_words = self.text_classifier.get_similar(
             question_id, max_similars=max_options, filter_list=id_list, term_diff_max_rank=40)
-        ids_sim = self._clean_ids(ids_sim, query)
+        ids_sim, dist, best_words = self._clean_ids(ids_sim, dist, best_words, query)
         return list(zip(ids_sim, best_words, dist))
 
     def suggest_tags(self, tag_type, question_id):
@@ -405,14 +407,27 @@ class Searcher:
         return query
 
     @staticmethod
-    def _clean_ids(ids, query):
-        ids = map(lambda x: x[1:], ids)
+    def _clean_ids(ids, distances, best_words, query):
+        ids = list(map(lambda x: int(x[1:]), ids))
+        joined_results = {}
+        for i in range(len(ids)):
+            x = ids[i]
+            if x not in joined_results:
+                joined_results[x] = (distances[i], best_words[i], x)
+            else:
+                joined_results[x] = (
+                    min(joined_results[x][0], distances[i]),
+                    joined_results[x][1] + best_words[i],
+                    x
+                )
         if 'id' in query:
-            question_id = str(query['id'])
-            ids = filter(lambda x: x != question_id, ids)
-        seen = set()
-        seen_add = seen.add
-        return [int(x) for x in ids if not (x in seen or seen_add(x))]
+            question_id = query['id']
+            if question_id in joined_results:
+                del joined_results[question_id]
+
+        final_results = sorted(list(joined_results.values()))
+        distances, words, ids = zip(*final_results)
+        return ids, distances, words
 
     @staticmethod
     def url_maker(query, page=None):
