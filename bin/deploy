@@ -6,6 +6,8 @@ ssh-keyscan -p $PORT_SSH_DEV $IP_DEV >> ~/.ssh/known_hosts
 
 DEPLOY_SCRIPT="
 cd /home/user/text-classifier;
+. venv/bin/activate
+pip install --upgrade textar
 git fetch;
 git checkout -b v${TRAVIS_TAG} ${TRAVIS_TAG};
 echo '${PASS_SSH_DEV}' | sudo -S service text-classifier restart;
