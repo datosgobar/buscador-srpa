@@ -4,7 +4,7 @@
             window.jgm = window.jgm || {};
             window.jgm.best_words = window.jgm.best_words || {};
             window.jgm.best_words[{{ result.id }}] = {{ best_words|tojson|safe }}
-                    window.jgm.results.highlight({{ result.id }}, window.jgm.best_words[{{ result.id }}]);
+            window.jgm.results.highlight({{ result.id }}, window.jgm.best_words[{{ result.id }}]);
         });
     </script>
 {% endif %}
@@ -19,9 +19,11 @@
           {% include 'search/result/question_context.html' %}
           {% include 'search/result/question_question.html' %}
           {% include 'search/result/question_answer.html' %}
-          {% include 'search/result/question_tags.html' %}
+          {% if result.question_type == 'informes' %}
+            {% include 'search/result/question_tags.html' %}
+          {% endif %}
           {% include 'search/result/question_footer.html' %}
-            
+
         </div>
         <div class="panel panel-body delete-confirmation">
             <div class="center-vertical-table">

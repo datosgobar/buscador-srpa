@@ -16,9 +16,11 @@ $(function() {
 
         if (behaviourSelected == 'has-value') {
             searchFilters.find('.filter-value[data-filter-type="' + optionSelected + '"]').removeClass('hidden').addClass('active');
-            searchFilters.find('#filter-comparision-container').removeClass('hidden');
+            searchFilters.find('#date-filter-comparision-container').toggleClass('hidden', optionSelected != 'date');
+            searchFilters.find('#filter-comparision-container').toggleClass('hidden', optionSelected == 'date');
         } else if (behaviourSelected == 'without-value') {
             searchFilters.find('#filter-comparision-container').addClass('hidden');
+            searchFilters.find('#date-filter-comparision-container').addClass('hidden');
             searchFilters.find('.filter-value').addClass('hidden');
         }
     };
@@ -58,17 +60,24 @@ $(function() {
         var selectedFilterName = searchFilters.find('#filter-type option:selected').val();
         var newArgs = currentArgs();
         var translations = {
-            'informe': 'informe', 'autor': 'autor',
+            'origen': 'origen', 'autor': 'autor', 'date': 'fecha',
             'ministerio': 'ministerio', 'área de gestión': 'area'
         };
 
         if (selectedBehaviour == 'has-value') {
-            newArgs[translations[selectedFilterName]] = searchFilters.find('.filter-value.active option:selected').val();
-
-            var selectedComparision = searchFilters.find('#filter-comparision option:selected').val();
+            var selectedComparision;
+            if (selectedFilterName == 'date') {
+                newArgs[translations[selectedFilterName]] = datePicker.toString('YYYY-MM-DD');
+                selectedComparision = searchFilters.find('#date-filter-comparision').val();
+            } else {
+                newArgs[translations[selectedFilterName]] = searchFilters.find('.filter-value.active option:selected').val();
+                selectedComparision = searchFilters.find('#filter-comparision option:selected').val();
+            }
             var comparisionTranslation = {
                 'different-to': 'diferencia',
-                'equal-to': 'igualdad'
+                'equal-to': 'igualdad',
+                'greater-than': 'mayorigual',
+                'less-than': 'menorigual'
             };
             newArgs[translations[selectedFilterName] + '-comparacion'] = comparisionTranslation[selectedComparision];
         } else {
@@ -87,14 +96,33 @@ $(function() {
     searchFilters.find('#filter-comparision').select2({
         minimumResultsForSearch: Infinity
     });
+    searchFilters.find('#date-filter-comparision').select2({
+        minimumResultsForSearch: Infinity
+    });
     searchFilters.find('#filter-type').select2({
         minimumResultsForSearch: Infinity
     });
     searchFilters.find('.filter-value-picker').select2();
-    searchFilters.on('select2:select', function () {
+    moment.locale("es");
+    var datePickerInput = $('#date-filter-value');
+    var datePicker = new Pikaday({
+        field: datePickerInput[0],
+        format: 'D MMM YYYY',
+        i18n: {
+            previousMonth : 'Mes siguiente',
+            nextMonth     : 'Mes anterior',
+            months        : ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+            weekdays      : ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sabado'],
+            weekdaysShort : ['Dom','Lun','Mar','Mie','Jue','Vie','Sab']
+        }
+    })
+
+    var updateFilters = function () {
         showValuePicker();
         updateAddLink();
-    });
+    };
+    searchFilters.on('select2:select', updateFilters);
+    datePickerInput.on('change', updateFilters);
 
     showValuePicker();
     updateRemoveLinks();

@@ -22,4 +22,4 @@ class Config(object):
     MAIL_PORT = 587
     MAIL_USE_SSL = False
     MAIL_USE_TLS = True
-    MAIL_PASSWORD = os.environ['SMTP_PASS']
+    MAIL_PASSWORD = os.environ.get('SMTP_PASS', '')

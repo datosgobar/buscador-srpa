@@ -7,6 +7,7 @@ from .helpers import Searcher
 import getpass
 import os
 import pprint
+from .templates import init_template_filters
 
 
 def create_db():
@@ -22,6 +23,7 @@ def create_app():
     UserManager(db_adapter, app)
     searcher = Searcher()
     init_routes(app, db.session, searcher)
+    init_template_filters(app)
     return app
 
 

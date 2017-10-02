@@ -5,6 +5,7 @@
 @import url(libs/select2.min.css);
 @import url(libs/jquery.qtip.min.css);
 @import url(libs/nprogress.css);
+@import url(libs/pikaday.css);
 @font-face {
   font-family: 'Droid Serif';
   font-style: normal;
@@ -2402,6 +2403,13 @@ mark {
     text-align: right; }
     #search-filters #filter-picker .actions button {
       margin-bottom: 0; }
+  #search-filters #filter-picker label {
+    vertical-align: middle; }
+    #search-filters #filter-picker label #date-filter-value {
+      border: solid 1px #aaa;
+      border-radius: 4px;
+      height: 28px;
+      padding-left: 8px; }
 
 .search-results .results-title .results-actions {
   float: right;

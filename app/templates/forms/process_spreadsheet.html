@@ -46,6 +46,26 @@
                 </div>
             {% endblock %}
 
+            {% block question_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.question_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.question_date(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-6 date-format hidden">
+                        <p>Formato de la fecha</p>
+                        {{ form.question_date_format }}
+                    </div>
+                </div>
+            {% endblock %}
+
+
             <div class="col-xs-12 no-padding select-group">
                 <div class="col-xs-12 col-sm-6 field-label-container">
                     {{ form.context.label() }}
@@ -96,6 +116,25 @@
                 </div>
             {% endblock %}
 
+            {% block answer_date %}
+                <div class="col-xs-12 no-padding select-group">
+                    <div class="col-xs-12 col-sm-6 field-label-container">
+                        {{ form.answer_date.label() }}
+                    </div>
+                    <div class="col-xs-12 col-sm-6">
+                        {{ form.answer_date(class_='form-control') }}
+                    </div>
+                    <div class="col-xs-12">
+                      <p class="type-warning"></p>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6 col-sm-offset-6 date-format hidden">
+                        <p>Formato de la fecha</p>
+                        {{ form.answer_date_format }}
+                    </div>
+                </div>
+            {% endblock %}
+
             {% block topic %}
                 <div class="col-xs-12 no-padding select-group">
                     <div class="col-xs-12 col-sm-6 field-label-container">
@@ -135,7 +174,7 @@
 
             <div class="col-xs-12 no-padding preview-container">
                 <h5>Previsualización</h5>
-                {% with result = {}, hide_more_info_link = True, hide_actions = True %}
+                {% with result = {'question_type': form.type}, hide_more_info_link = True, hide_actions = True %}
                     {% include 'search/result/question.html' %}
                 {% endwith %}
             </div>
@@ -161,7 +200,20 @@
                    var warningEl = $(this).parents('.select-group').find('.type-warning');
                    if (attributeColumnNumber > -1) {
                      var valueTemplate = $attributePreviewElement.data('attribute-display-template');
-                     attributeValue = valueTemplate.replace('$', bestRowFromSpreadsheet[attributeColumnNumber]);
+                     var spreadsheetValue = bestRowFromSpreadsheet[attributeColumnNumber];
+                     if (attributeName.indexOf('date') != -1) {
+                         var dateFormat = $select.parents('.select-group').find('input[type="radio"]:checked').val() == '%d/%m/%Y' ? 'D/M/YYYY' : 'M/D/YYYY';
+                         var date = moment(spreadsheetValue.split('-').join('/'), dateFormat).locale('es');
+                         if (date.isValid()) {
+                             var day = date.format('D');
+                             var month = date.format('MMMM')
+                             var year = date.format('YYYY');
+                             spreadsheetValue = day + ' de ' + month + ' de ' + year;
+                         } else {
+                             spreadsheetValue = 'INVALIDA';
+                         }
+                     }
+                     attributeValue = valueTemplate.replace('$', spreadsheetValue);
                      if ($.inArray(desiredTypes[i], spreadsheetTypes[attributeColumnNumber].types) == -1){
                            msg = 'No coincide el tipo de dato. Se esperaba ' +  desiredTypes[i] + ' y fue ' +  spreadsheetTypes[attributeColumnNumber].types;
                      }else {
@@ -206,7 +258,22 @@
             var bestRowFromSpreadsheet = {{ spreadsheet_summary.best_row|tojson|safe }};
             var selects = $('form select');
             selects.on('change', update_example);
+            $('.select-group input[type="radio"]').on('change', update_example);
             update_example();
         })
+    </script>
+
+    <script>
+        $(function () {
+            var toggleDateFormatVisibility = function (e) {
+                var target = $(e.currentTarget);
+                var hasValue = !!target.val();
+                target.parents('.select-group').children('.date-format').toggleClass('hidden', !hasValue)
+            };
+            $('select#question_date, select#answer_date').on('change', toggleDateFormatVisibility)
+            toggleDateFormatVisibility($('select#question_date'));
+            toggleDateFormatVisibility($('select#answer_date'));
+            // TODO: escuchar cambios en los formatos y reflejarlo en el preview
+        });
     </script>
 {% endblock %}

@@ -1,11 +1,13 @@
 import csv
 from .models import Question, Topic, SubTopic, Author, Report
 import math
+import operator
 from flask import request, url_for, g
 from sqlalchemy import func
 from textar import TextClassifier
 from datetime import datetime
 from openpyxl import load_workbook
+from . import SRPAException, FileNotSupportedException
 
 
 class SpreadSheetReader:
@@ -22,16 +24,17 @@ class SpreadSheetReader:
         elif extension == 'xlsx':
             spreadsheet = cls.read_xlsx(file_path)
         else:
-            raise Exception('Formato no soportado')
+            raise FileNotSupportedException
 
         summary = {'best_row': []}
+        data = []
         for i, row in spreadsheet:
             if i == 0:
                 summary['first_row'] = row
                 data = [[] for col in row]
                 continue
-            for colnum in range(len(data)):
-                data[colnum].append(row[colnum])
+            for colnum in range(min(len(data), len(row))):
+                data[colnum].append(str(row[colnum]))
             summary['best_row'] = cls._best_row(summary['best_row'], row)
         summary['datatypes'] = cls._guess_datatypes(data)
         return summary
@@ -39,7 +42,12 @@ class SpreadSheetReader:
     @classmethod
     def read_csv(cls, csv_path):
         with open(csv_path, 'r', encoding='utf-8') as csvfile:
-            dialect = csv.Sniffer().sniff(csvfile.read(), delimiters=',')
+            file_content = csvfile.read()
+            first_row = file_content.split('\n')[0]
+            semicolon_separated = first_row.count(';') >= first_row.count(',')
+            if semicolon_separated:
+                raise SRPAException(message='Error de delimitador de csv', description='La planilla no está delimitada por comas')
+            dialect = csv.Sniffer().sniff(file_content, delimiters=',')
             csvfile.seek(0)
             reader = csv.reader(csvfile, dialect)
             for i, row in enumerate(reader):
@@ -49,11 +57,18 @@ class SpreadSheetReader:
     def read_xlsx(cls, xlsx_file_path):
         wb = load_workbook(xlsx_file_path, read_only=True)
         first_sheet = wb[wb.sheetnames[0]]
+        def cell_value(cell):
+            if cell.is_date:
+                return cell.value.strftime('%d-%m-%Y')
+            return str(cell.value or '').strip()
+
         for i, row in enumerate(first_sheet):
-            yield (i, [str(cell.value or '') for cell in row])
+            yield (i, [cell_value(cell) for cell in row])
 
     @staticmethod
     def _best_row(first_row, second_row):
+        first_row = [str(value) for value in first_row]
+        second_row = [str(value) for value in second_row]
 
         def columns_with_values(row):
             return sum([1 for field in row if len(field.strip()) > 0])
@@ -160,7 +175,7 @@ class Searcher:
                 all()
         return {
             u'autor': instances_with_at_least_one_question(Author),
-            u'informe': instances_with_at_least_one_question(Report),
+            u'origen': instances_with_at_least_one_question(Report),
             u'área de gestión': instances_with_at_least_one_question(SubTopic),
             u'ministerio': instances_with_at_least_one_question(Topic)
         }
@@ -190,18 +205,31 @@ class Searcher:
     def _search_questions(self, query):
         if query['text'] is not None:
             g.similarity_cutoff = 1.1
-            results = self._search_similar(query)
+            similarity_results = self._search_similar(query)
+            ids = [row[0] for row in similarity_results]
+            questions = self._get_filtered_results(ids, query['filters'])
+            filtered_ids = [q.id for q in questions]
+            results = []
+            for i, qid in enumerate(filtered_ids):
+                result = similarity_results[ids.index(qid)]
+                results.append((questions[i],) + result[1:])
         else:
-            results = Question.query.all()
-            results = self._order_results(results, query)
-            results = [(result, []) for result in results]
-        results = self._filter_results(results, query['filters'])
+            questions = self._get_filtered_results(None, query['filters'])
+            questions = self._order_results(questions, query)
+            results = [(q, []) for q in questions]
         return results
 
     @staticmethod
     def _order_results(results, query):
         if query['order'] in ('asc', 'desc'):
-            return sorted(results, key=lambda x: (x.report.name, x.number), reverse=query['order'] == 'desc')
+            return sorted(results, key=lambda x: (x.report.name, x.number),
+                          reverse=query['order'] == 'desc')
+        elif query['order'] in ('date-asc', 'date-desc'):
+            none_res = filter(lambda x: x.question_date is None, results)
+            not_none_res = filter(lambda x: x.question_date is not None, results)
+            ord_results = sorted(not_none_res, key=lambda x: x.question_date,
+                                 reverse=query['order'] == 'date-desc')
+            return list(ord_results) + list(none_res)
         else:
             return results
 
@@ -220,53 +248,75 @@ class Searcher:
             'query': query
         }
 
-    @staticmethod
-    def _pass_filter(result, filters):
-        """Recives an item of the results list [(result, best_words)]
-            and a dict of filter_ids and decides whether that element is
-            accepted by the filter or not.
-        """
-        result_only = result[0]
-        comparisions = []
-        for filter_attr, filter_value in filters.items():
-            if filter_value['filter_value'] and len(filter_value['filter_value']) > 0:
-                compare_to = filter_value['filter_value'][0].id
-            else:
-                compare_to = filter_value['filter_value']
-            if filter_value['filter_by'] == 'igualdad':
-                comparisions.append(getattr(result_only, filter_attr) == compare_to)
-            else:
-                comparisions.append(getattr(result_only, filter_attr) != compare_to)
-        return all(comparisions)
+    # @staticmethod
+    # def _pass_filter(result, filters):
+    #     """Recives an item of the results list [(result, best_words)]
+    #         and a dict of filter_ids and decides whether that element is
+    #         accepted by the filter or not.
+    #     """
+    #     result_only = result[0]
+    #     comparisions = []
+    #     for filter_attr, filter_value in filters.items():
+    #         if filter_value['filter_value'] and len(filter_value['filter_value']) > 0:
+    #             compare_to = filter_value['filter_value'][0].id
+    #         else:
+    #             compare_to = filter_value['filter_value']
+    #         if filter_value['filter_by'] == 'igualdad':
+    #             comparisions.append(getattr(result_only, filter_attr) == compare_to)
+    #         else:
+    #             comparisions.append(getattr(result_only, filter_attr) != compare_to)
+    #     return all(comparisions)
 
     @staticmethod
     def _collect_filter_values(filters):
+        operators = {'igualdad': operator.eq,
+                     'desigualdad': operator.ne,
+                     'mayorigual': operator.ge,
+                     'menorigual': operator.le}
         filter_models = {
             'ministerio': ('topic_id', Topic),
             'area': ('subtopic_id', SubTopic),
             'autor': ('author_id', Author),
-            'informe': ('report_id', Report)
+            'origen': ('report_id', Report),
+            'fecha': ('question_date', None),
+            'creado-en': ('created_at', None)
         }
-        filter_values = {}
+        filter_query = {}
         for filter_name, filter_model in filter_models.items():
             if filter_name in filters.keys():
-                comparision_key = filter_name + '-comparacion'
-                filter_info = {
-                    'filter_by': comparision_key in filters and filters[comparision_key] or 'igualdad',
-                    'filter_value': None
-                }
-                if len(filters[filter_name]) > 0:
-                    filter_info['filter_value'] = filter_model[1].query.filter_by(name=filters[filter_name]).all()
-                filter_values[filter_model[0]] = filter_info
-        return filter_values
+                comparison_key = filter_name + '-comparacion'
+                comparator = comparison_key in filters and filters[comparison_key] or 'igualdad'
+                info = {}
+                info['comparator'] = comparator
+                if len(filters[filter_name]) > 0 and filter_model[1]:
+                    info['value'] = filter_model[1].query.filter_by(name=filters[filter_name]).first().id
+                else:
+                    info['value'] = filters[filter_name]
+                filter_query[filter_model[0]] = info
+        sql_filter = None
+        for field, info in filter_query.items():
+            curr_operator = operators[info['comparator']]
+            print(info)
+            if sql_filter is None:
+                sql_filter = curr_operator(getattr(Question, field), info['value'])
+            else:
+                sql_filter = (sql_filter) & (curr_operator(getattr(Question, field), info['value']))
+        return sql_filter
 
-    def _filter_results(self, results, filters):
-        filter_values = self._collect_filter_values(filters)
-        filtered_questions = filter(lambda result: self._pass_filter(result, filter_values), results)
-        if 'creado-en' in filters:
-            created_at = datetime.strptime(filters['creado-en'], '%Y-%m-%d %H:%M:%S')
-            filtered_questions = filter(lambda x: x[0].created_at == created_at, filtered_questions)
-        return list(filtered_questions)
+    def _get_filtered_results(self, ids, filters):
+        sql_filter = self._collect_filter_values(filters)
+        if ids is not None and sql_filter is not None:
+            sql_filter = (sql_filter) & (Question.id.in_(ids))
+            results = Question.query.filter(sql_filter).all()
+            results = sorted(results, key=lambda x: ids.index(x.id))
+        elif ids is not None:
+            results = Question.query.filter(Question.id.in_(ids)).all()
+            results = sorted(results, key=lambda x: ids.index(x.id))
+        elif sql_filter is not None:
+            results = Question.query.filter(sql_filter).all()
+        else:
+            results = Question.query.all()
+        return results
 
     def get_similar_to(self, question):
         query = self.query_from_url()
@@ -303,11 +353,8 @@ class Searcher:
             max_options = per_page
         ids_sim, dist, best_words = self.text_classifier.get_similar(
             question_id, max_similars=max_options, filter_list=id_list, term_diff_max_rank=40)
-        ids_sim = self._clean_ids(ids_sim, query)
-        results = []
-        for qid in ids_sim:
-            results.append(Question.query.get(qid))
-        return zip(results, best_words, dist)
+        ids_sim, dist, best_words = self._clean_ids(ids_sim, dist, best_words, query)
+        return list(zip(ids_sim, best_words, dist))
 
     def suggest_tags(self, tag_type, question_id):
         question = Question.query.get(question_id)
@@ -340,9 +387,10 @@ class Searcher:
             'ministerio', 'ministerio-comparacion',
             'area', 'area-comparacion',
             'autor', 'autor-comparacion',
-            'informe', 'informe-comparacion',
+            'origen', 'origen-comparacion',
             'organismo-requerido',
-            'pregunta', 'creado-en'
+            'pregunta', 'creado-en', 'creado-en-comparacion',
+            'fecha', 'fecha-comparacion'
         ]
         query = {
             'text': request.args.get('q'),
@@ -359,20 +407,35 @@ class Searcher:
         return query
 
     @staticmethod
-    def _clean_ids(ids, query):
-        ids = map(lambda x: x[1:], ids)
+    def _clean_ids(ids, distances, best_words, query):
+        ids = list(map(lambda x: int(x[1:]), ids))
+        joined_results = {}
+        for i in range(len(ids)):
+            x = ids[i]
+            if x not in joined_results:
+                joined_results[x] = (distances[i], best_words[i], x)
+            else:
+                joined_results[x] = (
+                    min(joined_results[x][0], distances[i]),
+                    joined_results[x][1] + best_words[i],
+                    x
+                )
         if 'id' in query:
-            question_id = str(query['id'])
-            ids = filter(lambda x: x != question_id, ids)
-        seen = set()
-        seen_add = seen.add
-        return [int(x) for x in ids if not (x in seen or seen_add(x))]
+            question_id = query['id']
+            if question_id in joined_results:
+                del joined_results[question_id]
+
+        final_results = sorted(list(joined_results.values()))
+        distances, words, ids = zip(*final_results)
+        return ids, distances, words
 
     @staticmethod
     def url_maker(query, page=None):
         args = {}
         if 'text' in query and query['text'] is not None:
             args['q'] = query['text']
+        if 'order' in query:
+            args['order'] = query['order']
         for title, value in query['filters'].items():
             args[title] = value
         if page is not None:
