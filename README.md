@@ -30,6 +30,12 @@ python main.py create_db
 . venv/bin/activate
 python main.py create_user
 ```
+### Asignar un rol a un usuario
+
+```
+. venv/bin/activate
+python main.py add_user_role
+```
 
 ### Levantar el server:
 
