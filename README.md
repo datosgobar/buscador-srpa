@@ -17,6 +17,13 @@ pip install -r requirements.txt
 
 ## Para desarrollo
 
+### Crear la base de datos
+
+```
+. venv/bin/activate
+python main.py create_db
+```
+
 ### Crear usuarios
 
 ```
