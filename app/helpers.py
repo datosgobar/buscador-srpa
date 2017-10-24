@@ -58,7 +58,7 @@ class SpreadSheetReader:
         wb = load_workbook(xlsx_file_path, read_only=True)
         first_sheet = wb[wb.sheetnames[0]]
         def cell_value(cell):
-            if cell.is_date:
+            if cell.is_date and cell.value is not None:
                 return cell.value.strftime('%d-%m-%Y')
             return str(cell.value or '').strip()
 

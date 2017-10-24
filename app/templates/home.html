@@ -2,7 +2,7 @@
 {% block main %}
     <section class="container-fluid">
         <div class="row panels-row">
-        <!-- Estamos probando el deploy continuo, perdón por agregar ruido en este html :) -->
+        <!-- Estamos probando el deploy continuo con Roberto, perdón por agregar ruido en este html :) -->
             <div class="col-xs-12 col-sm-4 {{ 'col-sm-offset-2' if not current_user.has_role('admin') else '' }}">
                 <a class="panel panel-default panel-icon" href="{{ url_for('search') }}">
                     <div class="panel-heading hidden-xs"><i class="fa fa-search"></i></div>
