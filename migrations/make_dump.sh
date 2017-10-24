@@ -21,6 +21,6 @@ for TABLE in $TABLES ; do
         COLS_CS=`echo $COLS | sed 's/ /,/g'`
         /bin/echo -e ".mode insert\nselect $COLS_CS from $TABLE;\n" |
         "$SQLITE" "$DB" |
-        sed "s/^INSERT INTO table/INSERT INTO $TABLE ($COLS_CS)/"
+        sed "s/^INSERT INTO table/INSERT INTO $TABLE ($COLS_CS)/" | sed "s/questiontype_id/question_type/"
 done
 echo 'COMMIT;';
