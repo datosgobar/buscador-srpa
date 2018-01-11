@@ -7,8 +7,8 @@ Instalación de dependencias
 ```
 sudo apt-get install git-all python-pip python-dev build-essential sqlite3 libsqlite3-dev
 pip install virtualenv
-git clone https://github.com/datosgobar/text-classifier.git
-cd text-classifier/
+git clone https://github.com/datosgobar/buscador-srpa.git
+cd buscador-srpa/
 virtualenv -p python3 venv
 . venv/bin/activate
 pip install -r requirements.txt
